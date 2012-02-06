@@ -11,10 +11,26 @@ import os
 import re
 import markdown
 
+lang='zh'
 if len(sys.argv) > 1:
-    lang = sys.argv[-1]
-else:
-    lang='zh'
+    for d in sys.argv[-1:1:-1]:
+        if os.path.isdir(d):
+            lang = d
+            break
+
+html = '''
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+<title>%(title)s</title>
+<link rel=stylesheet href="/epub/ProGit.css">
+</head>
+<body>
+%(body)s
+</body>
+</html>
+'''
 
 def main():
     if not os.path.isdir('tmp'):
@@ -23,11 +39,15 @@ def main():
     for root,dirs,files in os.walk(lang):
         for name in files:
             if name.endswith('.markdown'):
-                fn = os.path.join(root, name)
+                src = os.path.join(root, name)
+                dst = '%s-%s.html' % (lang, name)
+                if os.path.isfile(dst) and '-f' not in sys.argv and os.stat(dst).st_mtime > os.stat(src).st_mtime:
+                    print "%s newer %s, skip.. \t(or add '-f' param)" % (dst, src)
+                    continue
                 if not os.path.isdir('tmp/%s' % root):
                     os.makedirs('tmp/%s' % root)
-                f1 = open(fn, 'r')
-                f2 = open('tmp/%s' % fn, 'w')
+                f1 = open(src, 'r')
+                f2 = open('tmp/%s' % src, 'w')
                 for line in f1:
                     matches = ins.match(line)
                     if matches:
@@ -36,10 +56,11 @@ def main():
                     f2.write(line)
                 f1.close()
                 f2.close()
-                markdown.markdownFromFile(
-                    input=f2.name, 
-                    output='%s-%s.html' % (lang, name))
-                print '-> %s-%s.html' % (lang, name)
+
+                title = dst
+                body = markdown.markdown(open(f2.name,'r').read().decode('utf-8')).encode('utf-8')
+                open(dst, 'w').write(html % locals())
+                print '-> %s' % dst
 
 if __name__ == '__main__':
     main()
