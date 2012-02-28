@@ -34,6 +34,7 @@ DIRECTORY = '''<!DOCTYPE html>
   <head>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
     <title>Pro Git</title>
+    <style> a { font-size: 0.8em;}; </style>
   </head>
   <body>
     %s
