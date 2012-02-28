@@ -125,7 +125,7 @@ if __name__ == '__main__':
         for d in sys.argv[1:]:
             if os.path.isdir(d):
                 langs.append(d)
-    
+
     if langs:
         main(langs)
     else:
