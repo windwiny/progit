@@ -106,9 +106,9 @@ def md2html(lang):
     for fn, title, ch, se in htmlfiles:
         fn = os.path.split(fn)[1]
         if se == 0:
-            htmllinks.append('<br /><b><a href="%s" target="content">%d %s</a></b>' % (fn, ch, title))
+            htmllinks.append('<b><a href="%s" target="content">%d %s</a></b><br />' % (fn, ch, title))
         else:
-            htmllinks.append('<br />&nbsp;&nbsp;<a href="%s" target="content">%d.%d %s</a>' % (fn, ch, se, title))
+            htmllinks.append('&nbsp;&nbsp;<a href="%s" target="content">%d.%d %s</a><br />' % (fn, ch, se, title))
     writefile('%s/directory.html' % htmldir, DIRECTORY % '\n'.join(htmllinks))
 
     # create index.html
