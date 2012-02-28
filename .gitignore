@@ -13,5 +13,4 @@ epub/temp
 *~
 .#*
 figures/*
-tmp
-*.markdown.html
+/html_*/*
