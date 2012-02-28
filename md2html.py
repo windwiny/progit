@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-  only use python markdown module convert markdown to html
+  Use python markdown module convert markdown to html
 
 '''
 
@@ -11,30 +11,31 @@ import os
 import re
 import markdown
 
-lang='zh'
+langs = ['zh']
 if len(sys.argv) > 1:
-    for d in sys.argv[-1:1:-1]:
+    for d in sys.argv[1:]:
         if os.path.isdir(d):
-            lang = d
-            break
+            langs.append(d)
 
 html = '''
 <!DOCTYPE html>
 <html>
-<head>
-<meta content="text/html; charset=UTF-8" http-equiv="content-type">
-<title>%(title)s</title>
-<link rel=stylesheet href="/epub/ProGit.css">
-</head>
-<body>
-%(body)s
-</body>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <title>%(title)s</title>
+    <link rel=stylesheet type="text/css" href="./epub/master.css">
+  </head>
+  <body>
+    <div id="wrapper">
+    <div id="content">
+    %(body)s
+    </div>
+    </div>
+  </body>
 </html>
 '''
 
-def main():
-    if not os.path.isdir('tmp'):
-        os.mkdir('tmp')
+def md2html(lang):
     ins = re.compile(r'\s*Insert\s+(\d+fig\d+).png')
     for root,dirs,files in os.walk(lang):
         for name in files:
@@ -61,6 +62,13 @@ def main():
                 body = markdown.markdown(open(f2.name,'r').read().decode('utf-8')).encode('utf-8')
                 open(dst, 'w').write(html % locals())
                 print '-> %s' % dst
+    
+def main():
+    if not os.path.isdir('tmp'):
+        os.mkdir('tmp')
+    for lang in langs:
+        print '%s\nGenerating %s html files\n%s' % ('--' * 30, lang, '--' * 30)
+        md2html(lang)
 
 if __name__ == '__main__':
     main()
