@@ -59,6 +59,8 @@ HTML = '''<!DOCTYPE html>
 '''
 
 def writefile(filename, txt):
+    if type(txt) == type(u''):
+        txt = txt.encode('utf-8')
     if os.path.isfile(filename) and open(filename, 'r').read() == txt:
         print ' -> %s  \t some as old, skip ..' % filename
     else:
